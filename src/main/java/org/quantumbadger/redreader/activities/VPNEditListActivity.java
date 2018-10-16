@@ -9,6 +9,7 @@ import android.view.SubMenu;
 import android.widget.EditText;
 
 import org.quantumbadger.redreader.R;
+import org.quantumbadger.redreader.common.General;
 import org.quantumbadger.redreader.common.PrefsUtility;
 
 /**
@@ -26,7 +27,7 @@ public final class VPNEditListActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		getWindow().setBackgroundDrawable(new ColorDrawable(obtainStyledAttributes(new int[] {R.attr.rrListBackgroundCol}).getColor(0,0)));
+		this.getWindow().setBackgroundDrawable(new ColorDrawable(obtainStyledAttributes(new int[] {R.attr.rrListBackgroundCol}).getColor(0,0)));
 
 		final Intent intent = getIntent();
 
@@ -63,6 +64,6 @@ public final class VPNEditListActivity extends BaseActivity {
 	 * 重置vpn list
 	 */
 	public void reset() {
-		finish();
+		General.recreateActivityNoAnimation(this);
 	}
 }

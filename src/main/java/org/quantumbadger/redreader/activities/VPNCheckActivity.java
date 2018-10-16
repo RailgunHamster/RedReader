@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.quantumbadger.redreader.R;
+import org.quantumbadger.redreader.common.General;
 import org.quantumbadger.redreader.common.PrefsUtility;
 
 /**
@@ -50,7 +51,7 @@ public final class VPNCheckActivity extends BaseActivity {
 
 		super.onCreate(savedInstanceState);
 
-		getWindow().setBackgroundDrawable(new ColorDrawable(obtainStyledAttributes(new int[] {R.attr.rrListBackgroundCol}).getColor(0,0)));
+		this.getWindow().setBackgroundDrawable(new ColorDrawable(obtainStyledAttributes(new int[] {R.attr.rrListBackgroundCol}).getColor(0,0)));
 
 		final Intent intent = getIntent();
 
@@ -62,9 +63,14 @@ public final class VPNCheckActivity extends BaseActivity {
 			VPNCheckActivity.model = new VPNCheckModel();
 		}
 
+		// init process
 		this.process = new TextView(this);
+		this.addContentView(this.process, R.layout.process);
+
+		// init percentage
 		this.percentage = new TextView(this);
 
+		// init texts
 		this.texts = new ListView(this);
 
 		setTitle(R.string.pref_appearance_vpn_check);
@@ -104,7 +110,7 @@ public final class VPNCheckActivity extends BaseActivity {
 	 * 重新计算并显示
 	 */
 	public void refresh() {
-		finish();
+		General.recreateActivityNoAnimation(this);
 	}
 
 	private void updateProcess() {
