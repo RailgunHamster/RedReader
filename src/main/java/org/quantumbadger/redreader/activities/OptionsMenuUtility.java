@@ -66,7 +66,8 @@ public final class OptionsMenuUtility {
 		PIN,
 		UNPIN,
 		BLOCK,
-		UNBLOCK
+		UNBLOCK,
+		VPN_CHECK,
 	}
 
 	public static <E extends BaseActivity & OptionsMenuListener> void prepare(
@@ -198,6 +199,7 @@ public final class OptionsMenuUtility {
 		if(optionsMenuItemsPrefs.contains(OptionsMenuItemsPref.ACCOUNTS)) add(activity, menu, Option.ACCOUNTS, false);
 		if(optionsMenuItemsPrefs.contains(OptionsMenuItemsPref.THEME)) add(activity, menu, Option.THEMES, false);
 		add(activity, menu, Option.SETTINGS, false);
+		add(activity, menu, Option.VPN_CHECK, false);
 		if(optionsMenuItemsPrefs.contains(OptionsMenuItemsPref.CLOSE_ALL)) add(activity, menu, Option.CLOSE_ALL, false);
 	}
 
@@ -242,6 +244,17 @@ public final class OptionsMenuUtility {
 				menu.add(activity.getString(R.string.options_settings)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 					public boolean onMenuItemClick(final MenuItem item) {
 						final Intent intent = new Intent(activity, SettingsActivity.class);
+						activity.startActivityForResult(intent, 1);
+						return true;
+					}
+				});
+				break;
+
+			case VPN_CHECK:
+				menu.add(activity.getString(R.string.options_vpn_check)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+					@Override
+					public boolean onMenuItemClick(final MenuItem menuItem) {
+						final Intent intent = new Intent(activity, VPNCheckActivity.class);
 						activity.startActivityForResult(intent, 1);
 						return true;
 					}

@@ -42,6 +42,7 @@
     <string name="pref_appearance_tabletmode_header">Tablet Mode</string>
     <string name="pref_appearance_comments_header">Comments</string>
     <string name="pref_appearance_other_header">Other</string>
+	<string name="pref_appearance_vpn_check">VPN check</string>
 
     <string name="pref_appearance_twopane_key" translatable="false">pref_appearance_twopane</string>
     <string name="pref_appearance_twopane_title">Tablet Mode (two pane)</string>
@@ -132,6 +133,7 @@
     <string name="options_accounts_long">Reddit Accounts</string>
     <string name="options_theme">Themes</string>
     <string name="options_settings">Settings</string>
+	<string name="options_vpn_check">VPN check</string>
 
     <string name="options_submit_post">Submit Post</string>
 
