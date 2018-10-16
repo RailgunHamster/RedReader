@@ -16,6 +16,7 @@
     <string name="pref_appearance_comments_header">评论</string>
     <string name="pref_appearance_other_header">其他</string>
 	<string name="pref_appearance_vpn_check">VPN测试</string>
+	<string name="pref_appearance_vpn_edit_check_list">VPN修改测试列表</string>
 
     <string name="pref_appearance_twopane_title">平板电脑模式（双屏）</string>
 
@@ -73,7 +74,9 @@
     <string name="options_accounts_long">Reddit帐号</string>
     <string name="options_theme">主题</string>
     <string name="options_settings">设置</string>
-	<string name="options_vpn_check">VPN测试</string>>
+	<string name="options_vpn_check">VPN测试</string>
+	<string name="options_edit">编辑</string>
+	<string name="options_reset">重置</string>
 
     <string name="options_submit_post">发布帖子</string>
 

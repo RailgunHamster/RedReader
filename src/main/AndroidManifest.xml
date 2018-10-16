@@ -65,6 +65,9 @@
 		<activity android:name=".activities.VPNCheckActivity"
 				  android:configChanges="orientation|screenSize|keyboardHidden" />
 
+		<activity android:name=".activities.VPNEditListActivity"
+				android:configChanges="orientation|screenSize|keyboardHidden" />
+
         <activity android:name=".activities.LinkDispatchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
