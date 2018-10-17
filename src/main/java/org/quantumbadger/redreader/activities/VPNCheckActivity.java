@@ -3,10 +3,13 @@ package org.quantumbadger.redreader.activities;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.quantumbadger.redreader.R;
@@ -63,12 +66,20 @@ public final class VPNCheckActivity extends BaseActivity {
 			VPNCheckActivity.model = new VPNCheckModel();
 		}
 
+		LayoutInflater layoutInflater = LayoutInflater.from(this);
+		View view = layoutInflater.inflate(R.layout.process, null);
+		RelativeLayout.LayoutParams layoutParams =
+				new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.MATCH_PARENT,
+						RelativeLayout.LayoutParams.MATCH_PARENT
+				);
+		this.addContentView(view, layoutParams);
+
 		// init process
-		this.process = new TextView(this);
-		this.addContentView(this.process, R.layout.process);
+		this.process = findViewById(R.id.process);
 
 		// init percentage
-		this.percentage = new TextView(this);
+		this.percentage = findViewById(R.id.percentage);
 
 		// init texts
 		this.texts = new ListView(this);

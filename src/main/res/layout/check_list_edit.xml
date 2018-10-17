@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+	<EditText
+			android:id="@+id/check_list_edit"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:layout_gravity="center_vertical"
+			android:ems="10"
+    		android:enabled="true"
+    		android:gravity="top"
+			android:minLines="10"
+			android:maxLines="10"
+			android:scrollbars="vertical"
+			android:background="@android:drawable/edit_text"
+			android:inputType="textMultiLine" />
+</LinearLayout>

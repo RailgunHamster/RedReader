@@ -3,10 +3,13 @@ package org.quantumbadger.redreader.activities;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.common.General;
@@ -35,7 +38,16 @@ public final class VPNEditListActivity extends BaseActivity {
 			throw new RuntimeException("Nothing to show!");
 		}
 
-		this.edit = new EditText(this);
+		LayoutInflater layoutInflater = LayoutInflater.from(this);
+		View view = layoutInflater.inflate(R.layout.check_list_edit, null);
+		RelativeLayout.LayoutParams layoutParams =
+				new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.MATCH_PARENT,
+						RelativeLayout.LayoutParams.MATCH_PARENT
+				);
+		this.addContentView(view, layoutParams);
+
+		this.edit = findViewById(R.id.check_list_edit);
 
 		setTitle(R.string.pref_appearance_vpn_edit_check_list);
 	}
