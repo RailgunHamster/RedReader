@@ -154,6 +154,10 @@
     <string name="options_sort_posts">Sort Posts</string>
     <string name="options_sort_comments">Sort Comments</string>
 
+	<!-- Check List View -->
+	<string name="zero">0</string>
+	<string name="percentage">%</string>
+
     <!-- Main Menu -->
 
     <string name="mainmenu_frontpage">Front Page</string>

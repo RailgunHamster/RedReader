@@ -3,6 +3,8 @@ package org.quantumbadger.redreader.activities;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.quantumbadger.redreader.R;
-import org.quantumbadger.redreader.common.General;
+import org.quantumbadger.redreader.adapters.CheckListAdapter;
 import org.quantumbadger.redreader.common.PrefsUtility;
+import org.quantumbadger.redreader.common.VPNCheckModel;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Locale;
 
 /**
  * VPN Check Activity
@@ -22,30 +29,14 @@ import org.quantumbadger.redreader.common.PrefsUtility;
  * 以及提供了重新运行和跳转到修改页面的按钮。
  */
 public final class VPNCheckActivity extends BaseActivity {
-	/**
-	 * Model层
-	 * 控制底层数据读写
-	 */
-	public final class VPNCheckModel {
-		void resetCheckList() {
-			;
-		}
-
-		void editCheckList(String newList) {
-			;
-		}
-
-		String getCheckItem(Integer index) {
-			return "";
-		}
-	}
 
 	public static VPNCheckModel model;
 
+	private Integer processNum = 0;
 	private TextView process;
-	private TextView percentage;
 
 	private ListView texts;
+	private CheckListAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +70,14 @@ public final class VPNCheckActivity extends BaseActivity {
 		this.process = findViewById(R.id.process);
 
 		// init percentage
-		this.percentage = findViewById(R.id.percentage);
+		// this.percentage = findViewById(R.id.percentage);
 
 		// init texts
-		this.texts = new ListView(this);
+		this.texts = findViewById(R.id.check_list_view);
+		adapter = new CheckListAdapter(this, R.layout.check_list_item, model);
+		this.texts.setAdapter(adapter);
+		// 暂时关闭点击
+		this.texts.setClickable(false);
 
 		setTitle(R.string.pref_appearance_vpn_check);
 	}
@@ -118,13 +113,80 @@ public final class VPNCheckActivity extends BaseActivity {
 	}
 
 	/**
+	 * 显示过后再做处理
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		check();
+	}
+
+	private Boolean update_lock = false;
+	private Handler uiHandler = new Handler();
+	/**
+	 * 进行check，并更新到list view
+	 */
+	private void check() {
+		if (model == null) {
+			return;
+		}
+
+		if (update_lock) {
+			return;
+		}
+
+		update_lock = true;
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int size = model.size();
+				for (int i = 0; i < size; i++) {
+					VPNCheckModel.VPNCheckItem item = model.get(i);
+
+					try {
+						InetAddress inetAddress = InetAddress.getByName(item.uri.toString());
+
+						if (inetAddress.isReachable(100)) {
+							// 可以连接
+							processNum = (i * 100) / size;
+							item.success = true;
+						} else {
+							// 无法连接
+							item.success = false;
+						}
+					} catch (IOException io) {
+						// 无法连接
+						item.success = false;
+					}
+					// ui update
+					uiHandler.post(new Runnable() {
+						@Override
+						public void run() {
+							updateProcess(processNum);
+							adapter.notifyDataSetChanged();
+						}
+					});
+				}
+				update_lock = false;
+			}
+		}).start();
+	}
+
+	/**
 	 * 重新计算并显示
 	 */
 	public void refresh() {
-		General.recreateActivityNoAnimation(this);
+		updateProcess(0);
+		for (VPNCheckModel.VPNCheckItem item : model) {
+			item.success = null;
+		}
+		check();
 	}
 
-	private void updateProcess() {
-		;
+	private void updateProcess(Integer progress) {
+		this.process.setText(
+				String.format(Locale.getDefault(), "%d", progress)
+		);
 	}
 }
