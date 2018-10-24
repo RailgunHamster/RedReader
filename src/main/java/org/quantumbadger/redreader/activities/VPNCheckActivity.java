@@ -177,10 +177,12 @@ public final class VPNCheckActivity extends BaseActivity {
 	 * 重新计算并显示
 	 */
 	public void refresh() {
-		updateProcess(0);
 		for (VPNCheckModel.VPNCheckItem item : model) {
 			item.success = null;
 		}
+		// ui
+		updateProcess(0);
+		adapter.notifyDataSetChanged();
 		check();
 	}
 
