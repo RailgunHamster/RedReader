@@ -163,7 +163,7 @@ public final class VPNCheckActivity extends BaseActivity {
 					uiHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							updateProcess(processNum);
+							updateProcess();
 							adapter.notifyDataSetChanged();
 						}
 					});
@@ -177,18 +177,19 @@ public final class VPNCheckActivity extends BaseActivity {
 	 * 重新计算并显示
 	 */
 	public void refresh() {
+		processNum = 0;
 		for (VPNCheckModel.VPNCheckItem item : model) {
 			item.success = null;
 		}
 		// ui
-		updateProcess(0);
+		updateProcess();
 		adapter.notifyDataSetChanged();
 		check();
 	}
 
-	private void updateProcess(Integer progress) {
+	private void updateProcess() {
 		this.process.setText(
-				String.format(Locale.getDefault(), "%d", progress)
+				String.format(Locale.getDefault(), "%d", processNum)
 		);
 	}
 }
