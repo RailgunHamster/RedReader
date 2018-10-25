@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +31,14 @@ public final class VPNCheckActivity extends BaseActivity {
 
 	public static VPNCheckModel model;
 
-	private Integer processNum = 0;
+	private Double processNum = 0.0;
 	private TextView process;
 
 	private ListView texts;
 	private CheckListAdapter adapter;
+
+	private Boolean update_lock = false;
+	private Handler uiHandler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,17 +123,11 @@ public final class VPNCheckActivity extends BaseActivity {
 		check();
 	}
 
-	private Boolean update_lock = false;
-	private Handler uiHandler = new Handler();
 	/**
 	 * 进行check，并更新到list view
 	 */
 	private void check() {
 		if (model == null) {
-			return;
-		}
-
-		if (update_lock) {
 			return;
 		}
 
@@ -147,18 +143,12 @@ public final class VPNCheckActivity extends BaseActivity {
 					try {
 						InetAddress inetAddress = InetAddress.getByName(item.uri.toString());
 
-						if (inetAddress.isReachable(100)) {
-							// 可以连接
-							processNum = (i * 100) / size;
-							item.success = true;
-						} else {
-							// 无法连接
-							item.success = false;
-						}
+						item.success = inetAddress.isReachable(100);
 					} catch (IOException io) {
 						// 无法连接
 						item.success = false;
 					}
+					processNum = ((i + 1) * 100) / (double) size;
 					// ui update
 					uiHandler.post(new Runnable() {
 						@Override
@@ -176,20 +166,25 @@ public final class VPNCheckActivity extends BaseActivity {
 	/**
 	 * 重新计算并显示
 	 */
-	public void refresh() {
-		processNum = 0;
+	public synchronized void refresh() {
+		if (update_lock) {
+			return;
+		}
+
+		processNum = 0.0;
 		for (VPNCheckModel.VPNCheckItem item : model) {
 			item.success = null;
 		}
 		// ui
 		updateProcess();
 		adapter.notifyDataSetChanged();
+		// run again
 		check();
 	}
 
 	private void updateProcess() {
 		this.process.setText(
-				String.format(Locale.getDefault(), "%d", processNum)
+				String.format(Locale.getDefault(), "%.0f", processNum)
 		);
 	}
 }
