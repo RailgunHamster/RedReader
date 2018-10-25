@@ -249,11 +249,11 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 	}
 
 	public void editCheckList(String str) {
-		if (str.equals("")) {
+		List<VPNCheckItem> newList = stringToCheckItems(str);
+
+		if (newList == null) {
 			return;
 		}
-
-		List<VPNCheckItem> newList = stringToCheckItems(str);
 
 		this.objects.addAll(newList);
 
