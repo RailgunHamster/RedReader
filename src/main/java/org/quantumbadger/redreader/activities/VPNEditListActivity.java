@@ -87,6 +87,8 @@ public final class VPNEditListActivity extends BaseActivity {
 	 * 重置vpn list
 	 */
 	public void reset() {
+		edit.setText("");
+
 		model.resetCheckList();
 	}
 }
