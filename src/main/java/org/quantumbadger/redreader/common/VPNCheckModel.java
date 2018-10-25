@@ -182,6 +182,6 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 	}
 
 	public void editCheckList(String newList) {
-		;
+		System.out.println(newList);
 	}
 }
