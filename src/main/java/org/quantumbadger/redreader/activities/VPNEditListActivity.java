@@ -12,14 +12,16 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import org.quantumbadger.redreader.R;
-import org.quantumbadger.redreader.common.General;
 import org.quantumbadger.redreader.common.PrefsUtility;
+import org.quantumbadger.redreader.common.VPNCheckModel;
 
 /**
  * VPN Edit List Activity
  * 管理vpn list的修改和重置
  */
 public final class VPNEditListActivity extends BaseActivity {
+
+	public static VPNCheckModel model;
 
 	private EditText edit;
 
@@ -76,6 +78,14 @@ public final class VPNEditListActivity extends BaseActivity {
 	 * 重置vpn list
 	 */
 	public void reset() {
-		General.recreateActivityNoAnimation(this);
+		if (model == null) {
+			model = VPNCheckActivity.model;
+
+			if (model == null) {
+				return;
+			}
+		}
+
+		model.resetCheckList();
 	}
 }

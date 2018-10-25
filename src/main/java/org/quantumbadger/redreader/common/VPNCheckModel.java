@@ -10,12 +10,9 @@ import android.support.annotation.NonNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
  * Model层
@@ -58,13 +55,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(createTableSQL);
 
-			final ContentValues contentValues = new ContentValues();
-
-			for (VPNCheckItem item : defaultObjects) {
-				contentValues.put("name", item.name);
-				contentValues.put("uri", item.uri.toString());
-				db.insert(tableName, null, contentValues);
-			}
+			addDefaultToSQL(tableName, db);
 		}
 
 		@Override
@@ -89,6 +80,10 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 
 	public void add(String name, URI uri, Boolean success) {
 		this.objects.add(new VPNCheckItem(name, uri, success));
+	}
+
+	public void clear() {
+		this.objects.clear();
 	}
 
 	public VPNCheckItem get(int i) {
@@ -122,25 +117,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		sql = new SQLiteVPNCheckListHelper(context);
 
 		// load
-		SQLiteDatabase db = sql.getReadableDatabase();
-		Cursor cursor = db.query(
-				sql.tableName,
-				new String[] {"name", "uri"},
-				null, null,
-				null, null, null
-		);
-
-		try {
-			while (cursor.moveToNext()) {
-				String name = cursor.getString(cursor.getColumnIndex("name"));
-				URI uri = new URI(cursor.getString(cursor.getColumnIndex("uri")));
-				add(name, uri);
-			}
-			cursor.close();
-		} catch (URISyntaxException syntax) {
-			System.out.println("error when loading checklist from database with exception:");
-			syntax.printStackTrace();
-		}
+		load();
 	}
 
 	@NonNull
@@ -162,8 +139,46 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		};
 	}
 
+	private void addDefaultToSQL(String tableName, SQLiteDatabase db) {
+
+		final ContentValues contentValues = new ContentValues();
+
+		for (VPNCheckItem item : defaultObjects) {
+			contentValues.put("name", item.name);
+			contentValues.put("uri", item.uri.toString());
+			db.insert(tableName, null, contentValues);
+		}
+	}
+
+	private void load() {
+		SQLiteDatabase db = sql.getReadableDatabase();
+		Cursor cursor = db.query(
+				sql.tableName,
+				new String[] {"name", "uri"},
+				null, null,
+				null, null, null
+		);
+
+		clear();
+		try {
+			while (cursor.moveToNext()) {
+				String name = cursor.getString(cursor.getColumnIndex("name"));
+				URI uri = new URI(cursor.getString(cursor.getColumnIndex("uri")));
+				add(name, uri);
+			}
+			cursor.close();
+		} catch (URISyntaxException syntax) {
+			System.out.println("error when loading checklist from database with exception:");
+			syntax.printStackTrace();
+		}
+	}
+
 	public void resetCheckList() {
-		;
+		SQLiteDatabase db = sql.getWritableDatabase();
+		db.execSQL(String.format("%s %s", "delete from", sql.tableName));
+		addDefaultToSQL(sql.tableName, db);
+		clear();
+		this.objects.addAll(this.defaultObjects);
 	}
 
 	public void editCheckList(String newList) {
