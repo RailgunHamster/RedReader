@@ -19,15 +19,37 @@ import java.util.Locale;
  * 控制底层数据读写
  */
 public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem> {
-	public final class VPNCheckItem {
+	public static final class VPNCheckItem {
 		public String name;
 		public URI uri;
 		public Boolean success;
+
+		VPNCheckItem(String name, URI uri) {
+			this(name, uri, null);
+		}
 
 		VPNCheckItem(String name, URI uri, Boolean success) {
 			this.name = name;
 			this.uri = uri;
 			this.success = success;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			VPNCheckItem that = (VPNCheckItem) o;
+			return name.equals(that.name) &&
+					uri.equals(that.uri);
+		}
+
+		@Override
+		public String toString() {
+			return String.format(
+					Locale.getDefault(),
+					"VPNCheckItem[name: %s, uri: %s, success: %s]",
+					name, uri, success
+			);
 		}
 	}
 
@@ -55,7 +77,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(createTableSQL);
 
-			addDefaultToSQL(tableName, db);
+			addToSQL(defaultObjects);
 		}
 
 		@Override
@@ -75,7 +97,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 	private SQLiteVPNCheckListHelper sql;
 
 	public void add(String name, URI uri) {
-		this.add(name, uri, null);
+		this.objects.add(new VPNCheckItem(name, uri));
 	}
 
 	public void add(String name, URI uri, Boolean success) {
@@ -139,14 +161,14 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		};
 	}
 
-	private void addDefaultToSQL(String tableName, SQLiteDatabase db) {
-
+	private void addToSQL(List<VPNCheckItem> objects) {
+		final SQLiteDatabase db = sql.getWritableDatabase();
 		final ContentValues contentValues = new ContentValues();
 
-		for (VPNCheckItem item : defaultObjects) {
+		for (VPNCheckItem item : objects) {
 			contentValues.put("name", item.name);
 			contentValues.put("uri", item.uri.toString());
-			db.insert(tableName, null, contentValues);
+			db.insert(sql.tableName, null, contentValues);
 		}
 	}
 
@@ -173,15 +195,69 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		}
 	}
 
-	public void resetCheckList() {
+	private void deleteAll() {
 		SQLiteDatabase db = sql.getWritableDatabase();
 		db.execSQL(String.format("%s %s", "delete from", sql.tableName));
-		addDefaultToSQL(sql.tableName, db);
+	}
+
+	public void resetCheckList() {
+		deleteAll();
+		addToSQL(defaultObjects);
 		clear();
 		this.objects.addAll(this.defaultObjects);
 	}
 
-	public void editCheckList(String newList) {
-		System.out.println(newList);
+	static List<VPNCheckItem> stringToCheckItems(String str) {
+		if (str == null) {
+			return null;
+		}
+
+		str = str.trim();
+
+		List<VPNCheckItem> list = new ArrayList<>();
+
+		if (!str.contains(" ")) {
+			return null;
+		}
+
+		List<String> lines = new ArrayList<>();
+
+		if (str.contains("\n")) {
+			for (String line : str.split("\n")) {
+				lines.add(line);
+			}
+		} else {
+			lines.add(str);
+		}
+
+		try {
+			for (String line : lines) {
+				String[] strings = line.split("\\s+");
+
+				if (strings.length == 2) {
+					list.add(new VPNCheckItem(
+							strings[0],
+							new URI(strings[1])
+					));
+				}
+			}
+		} catch (URISyntaxException syntax) {
+			syntax.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public void editCheckList(String str) {
+		if (str.equals("")) {
+			return;
+		}
+
+		List<VPNCheckItem> newList = stringToCheckItems(str);
+
+		this.objects.addAll(newList);
+
+		deleteAll();
+		addToSQL(this.objects);
 	}
 }
