@@ -39,12 +39,12 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 
 		private static final int dbVersion = 1;
 
-		final String tableName = VPNCheckModel.class.getName();
+		final String tableName = VPNCheckModel.class.getSimpleName();
 
 		private final String createTableSQL = String.format(
 				"create table %s(%s,%s,%s,%s);",
 				tableName,
-				"id INTEGER PRIMARY AUTOINCREMENT KEY",
+				"id INTEGER PRIMARY KEY AUTOINCREMENT",
 				"name TEXT NOT NULL",
 				"uri TEXT NOT NULL",
 				"time TIMESTAMP DEFAULT (datetime('now', 'localtime'))"
@@ -59,19 +59,10 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 			db.execSQL(createTableSQL);
 
 			final ContentValues contentValues = new ContentValues();
-			final Map<String, URI> init = new HashMap<>();
 
-			try {
-				init.put("baidu", new URI("www.baidu.com"));
-				init.put("google", new URI("www.google.com"));
-				init.put("reddit", new URI("www.reddit.com"));
-			} catch (URISyntaxException syntax) {
-				syntax.printStackTrace();
-			}
-
-			for (Map.Entry<String, URI> entry : init.entrySet()) {
-				contentValues.put("name", entry.getKey());
-				contentValues.put("uri", entry.getValue().toString());
+			for (VPNCheckItem item : defaultObjects) {
+				contentValues.put("name", item.name);
+				contentValues.put("uri", item.uri.toString());
 				db.insert(tableName, null, contentValues);
 			}
 		}
@@ -87,6 +78,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		}
 	}
 
+	private List<VPNCheckItem> defaultObjects = new ArrayList<>();
 	private List<VPNCheckItem> objects = new ArrayList<>();
 
 	private SQLiteVPNCheckListHelper sql;
@@ -108,15 +100,40 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 	}
 
 	public VPNCheckModel(Context context) {
+		// default
+		try {
+			defaultObjects.add(
+					new VPNCheckItem(
+							"baidu", new URI("www.baidu.com"), false
+					));
+			defaultObjects.add(
+					new VPNCheckItem(
+							"google", new URI("www.google.com"), false
+					));
+			defaultObjects.add(
+					new VPNCheckItem(
+							"reddit", new URI("www.reddit.com"), false
+					));
+		} catch (URISyntaxException syntax) {
+			syntax.printStackTrace();
+		}
+
+		// sql
 		sql = new SQLiteVPNCheckListHelper(context);
 
+		// load
 		SQLiteDatabase db = sql.getReadableDatabase();
-		Cursor cursor = db.query(sql.tableName, null, "*", null, null, null, null);
+		Cursor cursor = db.query(
+				sql.tableName,
+				new String[] {"name", "uri"},
+				null, null,
+				null, null, null
+		);
 
 		try {
 			while (cursor.moveToNext()) {
-				String name = cursor.getString(1);
-				URI uri = new URI(cursor.getString(2));
+				String name = cursor.getString(cursor.getColumnIndex("name"));
+				URI uri = new URI(cursor.getString(cursor.getColumnIndex("uri")));
 				add(name, uri);
 			}
 			cursor.close();
