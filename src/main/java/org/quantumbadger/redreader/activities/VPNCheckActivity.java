@@ -56,7 +56,7 @@ public final class VPNCheckActivity extends BaseActivity {
 		}
 
 		if (VPNCheckActivity.model == null) {
-			VPNCheckActivity.model = new VPNCheckModel();
+			VPNCheckActivity.model = new VPNCheckModel(getApplicationContext());
 		}
 
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
