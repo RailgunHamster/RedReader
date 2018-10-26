@@ -21,8 +21,6 @@ import org.quantumbadger.redreader.common.VPNCheckModel;
  */
 public final class VPNEditListActivity extends BaseActivity {
 
-	public static VPNCheckModel model;
-
 	private EditText edit;
 
 	@Override
@@ -52,8 +50,6 @@ public final class VPNEditListActivity extends BaseActivity {
 		this.edit = findViewById(R.id.check_list_edit);
 
 		setTitle(R.string.pref_appearance_vpn_edit_check_list);
-
-		model = VPNCheckActivity.model;
 	}
 
 	@Override
@@ -80,7 +76,7 @@ public final class VPNEditListActivity extends BaseActivity {
 	protected void onStop() {
 		super.onStop();
 
-		model.editCheckList(edit.getText().toString());
+		VPNCheckModel.getInstance().editCheckList(edit.getText().toString());
 	}
 
 	/**
@@ -89,6 +85,6 @@ public final class VPNEditListActivity extends BaseActivity {
 	public void reset() {
 		edit.setText("");
 
-		model.resetCheckList();
+		VPNCheckModel.getInstance().resetCheckList();
 	}
 }

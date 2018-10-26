@@ -116,7 +116,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		return objects.size();
 	}
 
-	public VPNCheckModel(Context context) {
+	private VPNCheckModel(Context context) {
 		// default
 		try {
 			defaultObjects.add(
@@ -140,6 +140,28 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 
 		// load
 		load();
+	}
+
+	private static VPNCheckModel instance;
+
+	/**
+	 * 初始化模型唯一实例
+	 * @param context
+	 */
+	public static void init(Context context) {
+		if (instance != null) {
+			return;
+		}
+
+		instance = new VPNCheckModel(context);
+	}
+
+	/**
+	 * 获取模型唯一实例
+	 * @return
+	 */
+	public static VPNCheckModel getInstance() {
+		return instance;
 	}
 
 	@NonNull

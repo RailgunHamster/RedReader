@@ -29,8 +29,6 @@ import java.util.Locale;
  */
 public final class VPNCheckActivity extends BaseActivity {
 
-	public static VPNCheckModel model;
-
 	private Double processNum = 0.0;
 	private TextView process;
 
@@ -55,9 +53,7 @@ public final class VPNCheckActivity extends BaseActivity {
 			throw new RuntimeException("Nothing to show!");
 		}
 
-		if (VPNCheckActivity.model == null) {
-			VPNCheckActivity.model = new VPNCheckModel(getApplicationContext());
-		}
+		VPNCheckModel.init(getApplicationContext());
 
 		LayoutInflater layoutInflater = LayoutInflater.from(this);
 		View view = layoutInflater.inflate(R.layout.process, null);
@@ -76,7 +72,7 @@ public final class VPNCheckActivity extends BaseActivity {
 
 		// init texts
 		this.texts = findViewById(R.id.check_list_view);
-		adapter = new CheckListAdapter(this, R.layout.check_list_item, model);
+		adapter = new CheckListAdapter(this, R.layout.check_list_item, VPNCheckModel.getInstance());
 		this.texts.setAdapter(adapter);
 		// 暂时关闭点击
 		this.texts.setClickable(false);
@@ -127,15 +123,12 @@ public final class VPNCheckActivity extends BaseActivity {
 	 * 进行check，并更新到list view
 	 */
 	private void check() {
-		if (model == null) {
-			return;
-		}
-
 		update_lock = true;
 
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				VPNCheckModel model = VPNCheckModel.getInstance();
 				int size = model.size();
 				for (int i = 0; i < size; i++) {
 					VPNCheckModel.VPNCheckItem item = model.get(i);
@@ -172,7 +165,7 @@ public final class VPNCheckActivity extends BaseActivity {
 		}
 
 		processNum = 0.0;
-		for (VPNCheckModel.VPNCheckItem item : model) {
+		for (VPNCheckModel.VPNCheckItem item : VPNCheckModel.getInstance()) {
 			item.success = null;
 		}
 		// ui
