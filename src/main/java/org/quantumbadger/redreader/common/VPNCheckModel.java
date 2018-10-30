@@ -77,7 +77,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(createTableSQL);
 
-			addToSQL(defaultObjects);
+			addToSQL(defaultObjects, db);
 		}
 
 		@Override
@@ -158,7 +158,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 
 	/**
 	 * 获取模型唯一实例
-	 * @return
+	 * @return VPNCheckModel
 	 */
 	public static VPNCheckModel getInstance() {
 		return instance;
@@ -183,8 +183,10 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		};
 	}
 
-	private void addToSQL(List<VPNCheckItem> objects) {
-		final SQLiteDatabase db = sql.getWritableDatabase();
+	private void addToSQL(List<VPNCheckItem> objects, SQLiteDatabase db) {
+		if (db == null) {
+			db = sql.getWritableDatabase();
+		}
 		final ContentValues contentValues = new ContentValues();
 
 		for (VPNCheckItem item : objects) {
@@ -224,7 +226,7 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 
 	public void resetCheckList() {
 		deleteAll();
-		addToSQL(defaultObjects);
+		addToSQL(defaultObjects, null);
 		clear();
 		this.objects.addAll(this.defaultObjects);
 	}
@@ -280,6 +282,6 @@ public final class VPNCheckModel implements Iterable<VPNCheckModel.VPNCheckItem>
 		this.objects.addAll(newList);
 
 		deleteAll();
-		addToSQL(this.objects);
+		addToSQL(this.objects, null);
 	}
 }
