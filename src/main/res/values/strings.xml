@@ -137,6 +137,7 @@
 	<string name="options_vpn_check">VPN Check</string>
 	<string name="options_edit">Edit</string>
 	<string name="options_reset">Reset</string>
+	<string name="options_photo">Photo</string>
 
     <string name="options_submit_post">Submit Post</string>
 

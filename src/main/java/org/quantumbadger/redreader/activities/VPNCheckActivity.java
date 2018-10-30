@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -103,6 +104,16 @@ public final class VPNCheckActivity extends BaseActivity {
 			public boolean onMenuItemClick(MenuItem menuItem) {
 				final Intent intent = new Intent(VPNCheckActivity.this, VPNEditListActivity.class);
 				VPNCheckActivity.this.startActivityForResult(intent, 1);
+				return true;
+			}
+		});
+
+		// 添加没有意义的照相按钮
+		menu.add(this.getString(R.string.options_photo)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				VPNCheckActivity.this.startActivityForResult(camera, 1);
 				return true;
 			}
 		});
