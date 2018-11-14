@@ -1,7 +1,5 @@
 package org.quantumbadger.redreader.common;
 
-import android.util.Pair;
-
 import org.junit.Before;
 import org.junit.Test;
 
