@@ -19,6 +19,7 @@ package org.quantumbadger.redreader.views;
 
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -27,7 +28,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 import org.quantumbadger.redreader.common.PrefsUtility;
 
-public class LinkifiedTextView extends TextView {
+public class LinkifiedTextView extends AppCompatTextView {
 
 	private final AppCompatActivity mActivity;
 

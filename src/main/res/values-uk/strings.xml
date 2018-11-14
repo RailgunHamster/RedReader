@@ -418,7 +418,7 @@
     <string name="mainmenu_downvoted">Невподобані публікації</string>
     <string name="sidebar_activity_title">Бокова панель</string>
 
-    <string name="header_subscriber_count">%d підписників</string>
+    <string name="header_subscriber_count">%s підписників</string>
     <string name="header_subscriber_count_unknown">Кількість підписників невідома</string>
 
     <string name="invalid_subreddit_name">Неприпустиме ім\'я сабреддіта</string>
