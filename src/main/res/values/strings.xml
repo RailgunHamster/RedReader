@@ -43,7 +43,7 @@
     <string name="pref_appearance_comments_header">Comments</string>
     <string name="pref_appearance_other_header">Other</string>
 	<string name="pref_appearance_vpn_check">VPN Check</string>
-	<string name="pref_appearance_vpn_edit_check_list">VPN CheckList Edit</string>
+	<string name="pref_appearance_vpn_edit_check_list">VPN CheckList Editor</string>
 
     <string name="pref_appearance_twopane_key" translatable="false">pref_appearance_twopane</string>
     <string name="pref_appearance_twopane_title">Tablet Mode (two pane)</string>
